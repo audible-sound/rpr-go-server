@@ -15,4 +15,7 @@ type User struct {
 	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `json:"updated_at" gorm:"autoCreateTime"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"` // Enable soft delete, user record will be excluded when fetching data
+	Posts     []Post         `json:"posts" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
+	PostLikes []PostLike     `json:"post_likes" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
+	Comments  []Comment      `json:"comments" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
 }
