@@ -10,3 +10,7 @@ type PostTag struct {
 	Post   Post      `json:"post" gorm:"foreignKey:PostID; constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
 	Tag    Tag       `json:"tag" gorm:"foreignKey:TagID; constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
 }
+
+func init() {
+	Register(&PostTag{})
+}

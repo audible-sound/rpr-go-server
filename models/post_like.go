@@ -13,3 +13,7 @@ type PostLike struct {
 	Post    Post      `json:"post" gorm:"foreignKey:PostID; constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
 	LikedAt time.Time `json:"liked_at" gorm:"autoCreateTime"`
 }
+
+func init() {
+	Register(&PostLike{})
+}

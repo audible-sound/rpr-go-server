@@ -2,47 +2,32 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"strings"
+
+	dbManager "github.com/audible-sound/rpr-go-server/db"
+	"github.com/audible-sound/rpr-go-server/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-// Load Environment Variables
-func loadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error Loading .env File!")
-	}
-}
-
-// Connect to database
-func setupDatabase() *gorm.DB {
-	var dsn string = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_SSLMODE"),
-		os.Getenv("DB_TIMEZONE"))
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
-	}
-
-	return db
-}
-
 func main() {
-	loadEnv()
-	setupDatabase()
+	utils.LoadEnv()
+	db := dbManager.SetupDatabase()
 
+	if len(os.Args) > 1 {
+		var command string = strings.ToLower(os.Args[1])
+		if command == "migrate" {
+			dbManager.MigrateTables(db)
+		} else if command == "drop" {
+			dbManager.DropTables(db)
+		} else {
+			fmt.Println("Error: Command does not exist")
+		}
+		return
+	}
+
+	// Start the server
 	router := gin.Default()
 	router.Run(":3000")
 }

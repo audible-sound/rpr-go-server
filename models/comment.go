@@ -7,7 +7,7 @@ import (
 )
 
 type Comment struct {
-	ID        uuid.UUID `json:"id" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"` // Creates a version 4 UUID
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey"` // Creates a version 4 UUID
 	Content   string    `json:"content" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoCreateTime"`
@@ -15,4 +15,8 @@ type Comment struct {
 	PostID    uuid.UUID `json:"post_id" gorm:"primaryKey;"`
 	User      User      `json:"user" gorm:"foreignKey:UserID; constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
 	Post      Post      `json:"post" gorm:"foreignKey:PostID; constraint:OnUpdate:CASCADE, onDelete:CASCADE;"`
+}
+
+func init() {
+	Register(&Comment{})
 }
